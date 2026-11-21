@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-Obstacle Spatial Hazard Radar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #07090e;
+      --bg-surface: #0e1320;
+      --bg-surface-elevated: #141c2c;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-coral: rgba(244, 63, 94, 0.35);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent-coral: #f43f5e;
+      --accent-emerald: #10e583;
+      --accent-yellow: #ffd400;
+      --accent-cyan: #38bdf8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      line-height: 1.5;
+      padding: 28px 36px;
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+    .header {
+      background: linear-gradient(180deg, rgba(24, 16, 24, 0.95) 0%, rgba(14, 10, 18, 0.98) 100%);
+      border: 1px solid var(--border-coral);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 20px;
+    }
+    .title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+      color: #ffffff;
+    }
+    .meta-bar {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .kpi-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .kpi-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--accent-coral);
+    }
+    .kpi-val.emerald { color: var(--accent-emerald); }
+    .kpi-val.yellow { color: var(--accent-yellow); }
+    .kpi-lbl {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 20px;
+    }
+    .panel-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1 class="title">🚗 Multi-Obstacle Spatial Hazard Radar</h1>
+    <div class="meta-bar">
+      Source: Street Navigation Footage (2_multiobstacle_nav.mp4) • Targets: Vehicles, Bicycles, Pedestrians
+    </div>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi-box">
+      <div class="kpi-val">{{inference_time}}s</div>
+      <div class="kpi-lbl">Inference Latency</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-val">{{primary_risk_level}}</div>
+      <div class="kpi-lbl">Primary Risk Tier</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-val emerald">{{tracked_count}}</div>
+      <div class="kpi-lbl">Detected Obstacles</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-val yellow">{{blindspot_count}}</div>
+      <div class="kpi-lbl">Spatial Blindspots</div>
+    </div>
+  </div>
+
+  <div class="grid-2col">
+    <div class="panel">
+      <div class="panel-title">
+        <span>🎯</span> Detected Foreground Obstacles
+      </div>
+      {{detected_obstacles_html}}
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">
+        <span>⚠️</span> Spatial Blindspots & Limitations
+      </div>
+      {{blindspot_log_html}}
+    </div>
+  </div>
+
+</body>
+</html>

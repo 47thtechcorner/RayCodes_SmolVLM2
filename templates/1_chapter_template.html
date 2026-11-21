@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Chapters & Milestone Navigator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #07090e;
+      --bg-surface: #0e1320;
+      --bg-surface-elevated: #141c2c;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(255, 212, 0, 0.35);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent-yellow: #ffd400;
+      --accent-cyan: #38bdf8;
+      --accent-emerald: #10e583;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      line-height: 1.5;
+      padding: 28px 36px;
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+    .header {
+      background: linear-gradient(180deg, rgba(19, 24, 38, 0.95) 0%, rgba(11, 15, 24, 0.98) 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 20px;
+    }
+    .title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+      color: #ffffff;
+    }
+    .meta-bar {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .kpi-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .kpi-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--accent-yellow);
+    }
+    .kpi-lbl {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .timeline-container {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 20px;
+    }
+    .timeline-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .timeline-bar {
+      height: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 999px;
+      display: flex;
+      overflow: hidden;
+      gap: 3px;
+    }
+    .timeline-seg {
+      height: 100%;
+      border-radius: 3px;
+    }
+    .timeline-seg.s1 { width: 28%; background: linear-gradient(90deg, #ffd400, #ff9d00); }
+    .timeline-seg.s2 { width: 38%; background: linear-gradient(90deg, #38bdf8, #0284c7); }
+    .timeline-seg.s3 { width: 34%; background: linear-gradient(90deg, #10e583, #059669); }
+    .chapters-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .chapter-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 18px 22px;
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      transition: all 0.2s ease;
+    }
+    .chapter-card:hover {
+      border-color: var(--border-accent);
+      background: var(--bg-surface-elevated);
+    }
+    .time-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      font-weight: 700;
+      background: rgba(255, 212, 0, 0.1);
+      border: 1px solid rgba(255, 212, 0, 0.3);
+      color: var(--accent-yellow);
+      padding: 5px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .chap-body { flex: 1; }
+    .chap-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+    .chap-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      margin-bottom: 8px;
+    }
+    .chap-quote {
+      font-size: 0.78rem;
+      color: var(--accent-cyan);
+      background: rgba(56, 189, 248, 0.08);
+      border-left: 3px solid var(--accent-cyan);
+      padding: 6px 10px;
+      border-radius: 0 4px 4px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1 class="title">🎬 Video Chapter & Milestone Navigator</h1>
+    <div class="meta-bar">
+      Source: Rumble 2 Walkthrough (1_rumble2_walkthrough.mp4) • Total Duration: {{total_duration}}
+    </div>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi-box">
+      <div class="kpi-val">{{inference_time}}s</div>
+      <div class="kpi-lbl">Processing Latency</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-val">{{vram_usage}} GB</div>
+      <div class="kpi-lbl">Memory Allocated</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-val">{{frame_count}}</div>
+      <div class="kpi-lbl">Sampled Keyframes</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-val">{{milestone_count}}</div>
+      <div class="kpi-lbl">Chapters Extracted</div>
+    </div>
+  </div>
+
+  <div class="timeline-container">
+    <div class="timeline-title">
+      <span>Chapter Timeline</span>
+      <span style="font-family: 'JetBrains Mono', monospace; color: var(--accent-yellow);">3 Key Segments</span>
+    </div>
+    <div class="timeline-bar">
+      <div class="timeline-seg s1"></div>
+      <div class="timeline-seg s2"></div>
+      <div class="timeline-seg s3"></div>
+    </div>
+  </div>
+
+  <div class="chapters-grid">
+    {{chapter_cards_html}}
+  </div>
+
+</body>
+</html>

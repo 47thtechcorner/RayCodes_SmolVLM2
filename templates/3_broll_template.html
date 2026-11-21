@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>B-Roll Semantic Footage Search</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #07090e;
+      --bg-surface: #0e1320;
+      --bg-surface-elevated: #141c2c;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(56, 189, 248, 0.35);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent-cyan: #38bdf8;
+      --accent-yellow: #ffd400;
+      --accent-emerald: #10e583;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      line-height: 1.5;
+      padding: 28px 36px;
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+    .header {
+      background: linear-gradient(180deg, rgba(16, 24, 38, 0.95) 0%, rgba(10, 15, 24, 0.98) 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 20px;
+    }
+    .title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+      color: #ffffff;
+    }
+    .meta-bar {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .kpi-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .kpi-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--accent-cyan);
+    }
+    .kpi-val.yellow { color: var(--accent-yellow); }
+    .kpi-val.emerald { color: var(--accent-emerald); }
+    .kpi-lbl {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .search-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 20px;
+    }
+    .search-input {
+      width: 100%;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      color: #ffffff;
+      outline: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin-bottom: 12px;
+    }
+    .search-input:focus { border-color: var(--accent-cyan); }
+    .filter-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .filter-chip {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .filter-chip.active {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--accent-cyan);
+      color: #ffffff;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1 class="title">👥 Classroom Action & Activity Search Visualizer</h1>
+    <div class="meta-bar">
+      Source: Classroom Session Footage (3_creator_broll_footage.mp4) • Natural Query Action Matching
+    </div>
+  </div>
+
+  <div class="kpi-row">
+    <div class="kpi-box">
+      <div class="kpi-val">{{inference_time}}s</div>
+      <div class="kpi-lbl">Indexing Latency</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-val yellow">{{total_clips}}</div>
+      <div class="kpi-lbl">Action Events Indexed</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-val emerald">{{avg_latency}} ms</div>
+      <div class="kpi-lbl">Search Latency</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-val">{{match_accuracy}}%</div>
+      <div class="kpi-lbl">Match Score</div>
+    </div>
+  </div>
+
+  <div class="search-box">
+    <input type="text" class="search-input" value="student raising hand to ask question" placeholder="Search actions in natural language (e.g. 'raising hand', 'standing up', 'seated at desk')...">
+    <div class="filter-pills">
+      <span class="filter-chip active">All Action Clips</span>
+      <span class="filter-chip">#HandRaise</span>
+      <span class="filter-chip">#SeatedStudents</span>
+      <span class="filter-chip">#StandingToSpeak</span>
+      <span class="filter-chip">#ClassroomOverview</span>
+    </div>
+  </div>
+
+  <div class="gallery-grid">
+    {{broll_cards_html}}
+  </div>
+
+</body>
+</html>
